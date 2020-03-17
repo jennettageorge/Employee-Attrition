@@ -12,8 +12,10 @@ from sklearn import preprocessing
 from sklearn.model_selection import GridSearchCV
 from metaflow import FlowSpec, step, catch, retry, IncludeFile, Parameter
 import pandas as pd
+from sklearn.metrics import f1_score
 
 class EmployeeAttritioonPredictor(FlowSpec):
+
 
     @step
     def start(self):
@@ -138,27 +140,34 @@ class EmployeeAttritioonPredictor(FlowSpec):
 
 
         self.next(self.predict)
-
-    '''def predict(data, label):
+    @step
+    def predict(self):
         #train test split
-        x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, stratify=labels, random_state=0)
+        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.emp, self.labels, test_size=0.05, stratify=self.labels, random_state=0)
 
         # Train A Decision Tree Model
         # Create decision tree classifer object
         clf = RandomForestClassifier(random_state=0, n_jobs=-1)
 
         # Train model
-        model = clf.fit(x_train, y_train)
+        model = clf.fit(self.x_train, self.y_train)
 
         #Predict on testing data
-        rf_predictions = clf.predict(x_test)
+        self.rf_predictions = clf.predict(self.x_test)
 
+        self.next(self.metrics)
+
+    @step
+    def metrics(self):
         # Evaluate predictions
-        accuracy = accuracy_score(y_test, rf_predictions)
+        accuracy = accuracy_score(self.y_test, self.rf_predictions)
         print("Accuracy: %.2f%%" % (accuracy * 100.0))
-        cm = confusion_matrix(y_test, rf_predictions)
+        f1 = f1_score(self.y_test, self.rf_predictions)
+        print("F1 Score: .2f%%" % (f1 ))
+        cm = confusion_matrix(self.y_test, self.rf_predictions)
         print('Confusion Matrix: \n' , cm)
-        return rf_predictions
+
+        self.next(self.end)
     '''
     @step
     def predict(self):
@@ -191,7 +200,7 @@ class EmployeeAttritioonPredictor(FlowSpec):
         print("Accuracy: %.2f%%" % (accuracy * 100.0))
 
         self.next(self.end)
-
+        '''
     @step
     def end(self):
         print('Ending')
