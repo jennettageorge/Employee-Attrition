@@ -163,7 +163,7 @@ class EmployeeAttritioonPredictor(FlowSpec):
         accuracy = accuracy_score(self.y_test, self.rf_predictions)
         print("Accuracy: %.2f%%" % (accuracy * 100.0))
         f1 = f1_score(self.y_test, self.rf_predictions)
-        print("F1 Score: .2f%%" % (f1 ))
+        print("F1 Score: %" % (f1 ))
         cm = confusion_matrix(self.y_test, self.rf_predictions)
         print('Confusion Matrix: \n' , cm)
 
